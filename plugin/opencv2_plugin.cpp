@@ -6,15 +6,11 @@
 #include <phylanx/config.hpp>
 #include <phylanx/plugins/plugin_factory.hpp>
 
-#include "ocv2_plugin.hpp"
+#include "opencv2_plugin.hpp"
 
 PHYLANX_REGISTER_PLUGIN_MODULE();
 
 PHYLANX_REGISTER_PLUGIN_FACTORY(opencv2_imread_color_plugin,
     phylanx_plugin::opencv2_imread_color::match_data);
-PHYLANX_REGISTER_PLUGIN_FACTORY(constants_of_nature_e_plugin,
-    phylanx_plugin::constants_of_nature::match_data_e);
-PHYLANX_REGISTER_PLUGIN_FACTORY(constants_of_nature_pi_plugin,
-    phylanx_plugin::constants_of_nature::match_data_pi);
-PHYLANX_REGISTER_PLUGIN_FACTORY(constants_of_nature_ua_plugin,
-    phylanx_plugin::constants_of_nature::match_data_ua);
+PHYLANX_REGISTER_PLUGIN_FACTORY(opencv2_imread_gray_plugin,
+    phylanx_plugin::opencv2_imread_gray::match_data);
