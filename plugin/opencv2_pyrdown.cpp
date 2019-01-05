@@ -27,10 +27,10 @@ using namespace blaze;
 namespace phylanx_plugin
 {
     constexpr char const* const help_string = R"(
-        opencv2_pyrdown(name)
+        opencv2_pyrdown(img)
         Args:
 
-            name (string) : string to a file path
+            img (tensor) : BlazeTensor<uint8_t> of pixel data
 
         Returns:
 

@@ -30,11 +30,11 @@ namespace phylanx_plugin
         opencv2_pyrup(name)
         Args:
 
-            name (string) : string to a file path
+            img (tensor) : BlazeTensor<uint8_t> of pixel data
 
         Returns:
 
-            blaze::DynamicTensor<std::uint8>
+            blaze::DynamicTensor<std::uint8_t>
         )";
 
     ///////////////////////////////////////////////////////////////////////////
