@@ -19,6 +19,9 @@
 
 #include "opencv2_imread_color.hpp"
 
+using namespace cv;
+using namespace blaze;
+
 ///////////////////////////////////////////////////////////////////////////////
 namespace phylanx_plugin
 {
@@ -71,7 +74,7 @@ namespace phylanx_plugin
     ///////////////////////////////////////////////////////////////////////////
     blaze::DynamicMatrix<std::uint8_t> opencv2_imread_color::calculate(std::string const& name) const
     {
-        Mat const img = cv2::imread(name.c_str(), CV_LOAD_IMAGE_COLOR);
+        Mat const img = imread(name.c_str(), IMREAD_COLOR);
         if(img.data == nullptr) {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
                 "opencv2_imread_color::eval",
@@ -79,7 +82,7 @@ namespace phylanx_plugin
                     "image file not loaded successfully: " + name));
         }
 
-        blaze::DynamicTensor<std::uint8_t> bimg(img.rows(), img.cols(), img.channels(), img.data);
+        DynamicTensor<std::uint8_t> bimg(img.rows(), img.cols(), img.channels(), img.data);
         return bimg;
     }
 
