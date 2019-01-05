@@ -7,7 +7,7 @@ Provides the following OpenCV2 functionality:
 * pyrdown
 
 PhySL support functions:
-* `opencv2_imread_color` maps to cv::imread (color)
-* `opencv2_imread_gray` maps to cv::imread (gray-scale)
-* `opencv2_pyrup` maps to cv::pyrup
-* `opencv2_pyrdown` maps to cv::pyrdown
+* `opencv2_imread_color` maps to `cv::imread` (color)
+* `opencv2_imread_gray` maps to `cv::imread` (gray-scale)
+* `opencv2_pyrup` maps to `cv::pyrup`
+* `opencv2_pyrdown` maps to `cv::pyrdown`
