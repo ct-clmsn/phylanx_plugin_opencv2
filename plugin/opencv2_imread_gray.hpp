@@ -3,8 +3,8 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if !defined(PHYLANX_OCV2_IMREAD_COLOR)
-#define PHYLANX_OCV2_IMREAD_COLOR
+#if !defined(PHYLANX_OCV2_IMREAD_GRAY)
+#define PHYLANX_OCV2_IMREAD_GRAY
 
 #include <phylanx/config.hpp>
 #include <phylanx/execution_tree/primitives/base_primitive.hpp>
@@ -16,6 +16,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <blaze_tensor/Blaze.h>
 
 namespace phylanx_plugin
 {
@@ -35,7 +37,7 @@ namespace phylanx_plugin
             primitive_arguments_type const& operands,
             primitive_arguments_type const& args) const;
 
-        blaze::DynamicMatrix<std::uint8_t> calculate(std::string const& name) const;
+        blaze::DynamicTensor<std::uint8_t> calculate(std::string const& name) const;
 
     public:
         static phylanx::execution_tree::match_pattern_type const match_data;

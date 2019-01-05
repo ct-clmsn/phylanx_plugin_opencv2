@@ -17,7 +17,7 @@
 #include <utility>
 #include <vector>
 
-#include "opencv2_imread_color.hpp"
+#include "opencv2_pyrdown.hpp"
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
@@ -27,7 +27,7 @@ using namespace blaze;
 namespace phylanx_plugin
 {
     constexpr char const* const help_string = R"(
-        opencv2_imread_color(name)
+        opencv2_pyrdown(name)
         Args:
 
             name (string) : string to a file path
@@ -39,12 +39,12 @@ namespace phylanx_plugin
 
     ///////////////////////////////////////////////////////////////////////////
     phylanx::execution_tree::match_pattern_type const
-        opencv2_imread_color::match_data =
+        opencv2_pyrdown::match_data =
         {
-            hpx::util::make_tuple("opencv2_imread_color",
-                std::vector<std::string>{"opencv2_imread_color(_1)"},
-                &create_opencv2_imread_color,
-                &phylanx::execution_tree::create_primitive<opencv2_imread_color>,
+            hpx::util::make_tuple("opencv2_pyrdown",
+                std::vector<std::string>{"opencv2_pyrdown(_1)"},
+                &create_opencv2_pyrdown,
+                &phylanx::execution_tree::create_primitive<opencv2_pyrdown>,
                 help_string
             )
         };
@@ -65,7 +65,7 @@ namespace phylanx_plugin
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    opencv2_imread_color::opencv2_imread_color(
+    opencv2_pyrdown::opencv2_pyrdown(
             primitive_arguments_type&& operands, std::string const& name,
             std::string const& codename)
       : phylanx::execution_tree::primitives::primitive_component_base(
@@ -73,31 +73,34 @@ namespace phylanx_plugin
     {}
 
     ///////////////////////////////////////////////////////////////////////////
-    blaze::DynamicTensor<std::uint8_t> opencv2_imread_color::calculate(std::string const& name) const
+    blaze::DynamicTensor<std::uint8_t> opencv2_pyrdown::calculate(std::string const& name) const
     {
-        Mat const img = imread(name.c_str(), IMREAD_COLOR);
-        if(img.data == nullptr) {
+        Mat cvimgin(img.rows(), img.columns(), CV_8UC3, img.data());
+        if(cvimg.data == nullptr) {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
-                "opencv2_imread_color::eval",
+                "opencv2_pyrup::eval",
                 generate_error_message(
-                    "image file not loaded successfully: " + name));
+                    "image not loaded successfully: " + name));
         }
 
-        DynamicTensor<std::uint8_t> bimg(img.rows, img.cols, img.channels(), img.data);
+        Mat cvimgout;
+        pyrUp(cvimgin, cvimgout, Size(cvimgin.cols/2, cvimgin.rows/2) );
+        DynamicTensor<std::uint8_t> bimg(cvimgout.rows, cvimgout.cols, cvimgout.channels(), cvimgout.data);
+
         return bimg;
     }
 
     ///////////////////////////////////////////////////////////////////////////
     hpx::future<phylanx::execution_tree::primitive_argument_type>
-    opencv2_imread_color::eval(primitive_arguments_type const& operands,
+    opencv2_pyrdown::eval(primitive_arguments_type const& operands,
         primitive_arguments_type const& args, eval_context ctx) const
     {
         if (operands.size() > 1)
         {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
-                "opencv2_imread_color::eval",
+                "opencv2_pyrdown::eval",
                 generate_error_message(
-                    "opencv2_imread_color accepts either none or exactly one "
+                    "opencv2_pyrdown accepts either none or exactly one "
                     "argument"));
         }
 

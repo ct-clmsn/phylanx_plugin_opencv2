@@ -14,3 +14,7 @@ PHYLANX_REGISTER_PLUGIN_FACTORY(opencv2_imread_color_plugin,
     phylanx_plugin::opencv2_imread_color::match_data);
 PHYLANX_REGISTER_PLUGIN_FACTORY(opencv2_imread_gray_plugin,
     phylanx_plugin::opencv2_imread_gray::match_data);
+PHYLANX_REGISTER_PLUGIN_FACTORY(opencv2_pyrup_plugin,
+    phylanx_plugin::opencv2_pyrup::match_data);
+PHYLANX_REGISTER_PLUGIN_FACTORY(opencv2_pyrdown_plugin,
+    phylanx_plugin::opencv2_pyrdown::match_data);

@@ -10,5 +10,7 @@
 //
 #include "opencv2_imread_color.hpp"
 #include "opencv2_imread_gray.hpp"
+#include "opencv2_pyrup.hpp"
+#include "opencv2_pyrdown.hpp"
 
 #endif

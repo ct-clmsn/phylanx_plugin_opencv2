@@ -3,8 +3,8 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if !defined(PHYLANX_OCV2_IMREAD_COLOR)
-#define PHYLANX_OCV2_IMREAD_COLOR
+#if !defined(PHYLANX_OCV2_PYRUP_COLOR)
+#define PHYLANX_OCV2_PYRUP_COLOR
 
 #include <phylanx/config.hpp>
 #include <phylanx/execution_tree/primitives/base_primitive.hpp>
@@ -21,9 +21,9 @@
 
 namespace phylanx_plugin
 {
-    class opencv2_imread_color
+    class opencv2_pyrup
       : public phylanx::execution_tree::primitives::primitive_component_base
-      , public std::enable_shared_from_this<opencv2_imread_color>
+      , public std::enable_shared_from_this<opencv2_pyrup>
     {
     private:
         using primitive_argument_type =
@@ -45,9 +45,9 @@ namespace phylanx_plugin
         static phylanx::execution_tree::match_pattern_type const match_data_pi;
         static phylanx::execution_tree::match_pattern_type const match_data_ua;
 
-        opencv2_imread_color() = default;
+        opencv2_pyrup() = default;
 
-        opencv2_imread_color(primitive_arguments_type&& operands,
+        opencv2_pyrup(primitive_arguments_type&& operands,
             std::string const& name, std::string const& codename);
 
         hpx::future<primitive_argument_type> eval(
@@ -57,12 +57,12 @@ namespace phylanx_plugin
     };
 
     inline phylanx::execution_tree::primitive
-    create_opencv2_imread_color(hpx::id_type const& locality,
+    create_opencv2_pyrup(hpx::id_type const& locality,
         phylanx::execution_tree::primitive_arguments_type&& operands,
         std::string const& name = "", std::string const& codename = "")
     {
         return phylanx::execution_tree::create_primitive_component(
-            locality, "opencv2_imread_color", std::move(operands), name, codename);
+            locality, "opencv2_pyrup", std::move(operands), name, codename);
     }
 }
 

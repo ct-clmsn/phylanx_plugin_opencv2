@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "opencv2_imread_gray.hpp"
+#include <opencv2/opencv.hpp>
 
 using namespace cv;
 using namespace blaze;
@@ -38,12 +39,12 @@ namespace phylanx_plugin
 
     ///////////////////////////////////////////////////////////////////////////
     phylanx::execution_tree::match_pattern_type const
-        constants_of_nature::match_data =
+        opencv2_imread_gray::match_data =
         {
             hpx::util::make_tuple("opencv2_imread_gray",
                 std::vector<std::string>{"opencv2_imread_gray(_1)"},
-                &create_constants_of_nature,
-                &phylanx::execution_tree::create_primitive<constants_of_nature>,
+                &create_opencv2_imread_gray,
+                &phylanx::execution_tree::create_primitive<opencv2_imread_gray>,
                 help_string
             )
         };
@@ -72,7 +73,7 @@ namespace phylanx_plugin
     {}
 
     ///////////////////////////////////////////////////////////////////////////
-    blaze::DynamicMatrix<std::uint8_t> opencv2_imread_gray::calculate(std::string const& name) const
+    blaze::DynamicTensor<std::uint8_t> opencv2_imread_gray::calculate(std::string const& name) const
     {
         Mat const img = imread(name.c_str(), IMREAD_GRAYSCALE);
         if(img.data == nullptr) {
@@ -82,13 +83,13 @@ namespace phylanx_plugin
                     "image file not loaded successfully: " + name));
         }
 
-        DynamicTensor<std::uint8_t> bimg(img.rows(), img.cols(), img.channels(), img.data);
+        DynamicTensor<std::uint8_t> bimg(img.rows, img.cols, img.channels(), img.data);
         return bimg;
     }
 
     ///////////////////////////////////////////////////////////////////////////
     hpx::future<phylanx::execution_tree::primitive_argument_type>
-    constants_of_nature::eval(primitive_arguments_type const& operands,
+    opencv2_imread_gray::eval(primitive_arguments_type const& operands,
         primitive_arguments_type const& args, eval_context ctx) const
     {
         if (operands.size() > 1)
@@ -115,7 +116,7 @@ namespace phylanx_plugin
                 ->  primitive_argument_type
                 {
                     return primitive_argument_type{
-                        this_->calculate_constant(val.get())};
+                        this_->calculate(val.get())};
                 });
     }
 }
