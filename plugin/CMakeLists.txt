@@ -6,12 +6,16 @@
 set(plugin_headers
     ${CMAKE_CURRENT_LIST_DIR}/opencv2_plugin.hpp
     ${CMAKE_CURRENT_LIST_DIR}/opencv2_imread_color.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/opencv2_imread_gray.hpp)
+    ${CMAKE_CURRENT_LIST_DIR}/opencv2_imread_gray.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/opencv2_pyrup.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/opencv2_pyrdown.hpp)
 
 set(plugin_sources
     ${CMAKE_CURRENT_LIST_DIR}/opencv2_plugin.cpp
     ${CMAKE_CURRENT_LIST_DIR}/opencv2_imread_color.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/opencv2_imread_gray.cpp)
+    ${CMAKE_CURRENT_LIST_DIR}/opencv2_imread_gray.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/opencv2_pyrup.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/opencv2_pyrdown.cpp)
 
 add_phylanx_primitive_plugin(
     ocv2

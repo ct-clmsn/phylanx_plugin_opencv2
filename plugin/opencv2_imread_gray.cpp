@@ -16,6 +16,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <functional>
 
 #include "opencv2_imread_gray.hpp"
 #include <opencv2/opencv.hpp>
@@ -49,21 +50,6 @@ namespace phylanx_plugin
             )
         };
 
-    namespace detail
-    {
-        std::string extract_function_name(std::string const& name)
-        {
-            using namespace phylanx::execution_tree::compiler;
-
-            primitive_name_parts name_parts;
-            if (!parse_primitive_name(name, name_parts))
-            {
-                return name;
-            }
-            return name_parts.primitive;
-        }
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     opencv2_imread_gray::opencv2_imread_gray(
             primitive_arguments_type&& operands, std::string const& name,
@@ -73,18 +59,22 @@ namespace phylanx_plugin
     {}
 
     ///////////////////////////////////////////////////////////////////////////
-    blaze::DynamicTensor<std::uint8_t> opencv2_imread_gray::calculate(std::string const& name) const
+    phylanx::execution_tree::primitive_argument_type opencv2_imread_gray::calculate(
+        phylanx::execution_tree::primitive_arguments_type && args) const
     {
-        Mat const img = imread(name.c_str(), IMREAD_GRAYSCALE);
+        // extract arguments
+        auto const fname = extract_string_value(args[0]);
+
+        Mat const img = imread(fname.c_str(), IMREAD_GRAYSCALE);
         if(img.data == nullptr) {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
                 "opencv2_imread_gray::eval",
                 generate_error_message(
-                    "image file not loaded successfully: " + name));
+                    "image file not loaded successfully: " + fname));
         }
 
         DynamicTensor<std::uint8_t> bimg(img.rows, img.cols, img.channels(), img.data);
-        return bimg;
+        return phylanx::execution_tree::primitive_argument_type{std::move(bimg)};
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -92,7 +82,7 @@ namespace phylanx_plugin
     opencv2_imread_gray::eval(primitive_arguments_type const& operands,
         primitive_arguments_type const& args, eval_context ctx) const
     {
-        if (operands.size() > 1)
+        if (operands.size() != 1)
         {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
                 "opencv2_imread_gray::eval",
@@ -101,22 +91,15 @@ namespace phylanx_plugin
                     "argument"));
         }
 
-        if (operands.empty())
-        {
-            // no arguments, derive functionality from primitive name
-            return hpx::make_ready_future(primitive_argument_type{
-                calculate(detail::extract_function_name(name_))});
-        }
-
         auto this_ = this->shared_from_this();
-        return string_operand(
-                operands[0], args, name_, codename_, std::move(ctx))
-            .then(
-                [this_](hpx::future<std::string> val)
-                ->  primitive_argument_type
-                {
-                    return primitive_argument_type{
-                        this_->calculate(val.get())};
-                });
+        return hpx::dataflow(hpx::launch::sync, hpx::util::unwrapping(
+            [this_ = std::move(this_)](primitive_arguments_type && args)
+            ->  primitive_argument_type
+            {
+                return this_->calculate(std::move(args));
+            }),
+            phylanx::execution_tree::primitives::detail::map_operands(
+                operands, phylanx::execution_tree::functional::value_operand{}, args,
+                name_, codename_));
     }
 }

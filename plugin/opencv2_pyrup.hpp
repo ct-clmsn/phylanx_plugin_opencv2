@@ -37,13 +37,11 @@ namespace phylanx_plugin
             primitive_arguments_type const& operands,
             primitive_arguments_type const& args) const;
 
-        blaze::DynamicTensor<std::uint8_t> calculate(std::string const& name) const;
+        phylanx::execution_tree::primitive_argument_type calculate(
+            primitive_arguments_type && args) const;
 
     public:
         static phylanx::execution_tree::match_pattern_type const match_data;
-        static phylanx::execution_tree::match_pattern_type const match_data_e;
-        static phylanx::execution_tree::match_pattern_type const match_data_pi;
-        static phylanx::execution_tree::match_pattern_type const match_data_ua;
 
         opencv2_pyrup() = default;
 

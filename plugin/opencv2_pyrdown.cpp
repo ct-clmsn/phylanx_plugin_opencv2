@@ -49,21 +49,6 @@ namespace phylanx_plugin
             )
         };
 
-    namespace detail
-    {
-        std::string extract_function_name(std::string const& name)
-        {
-            using namespace phylanx::execution_tree::compiler;
-
-            primitive_name_parts name_parts;
-            if (!parse_primitive_name(name, name_parts))
-            {
-                return name;
-            }
-            return name_parts.primitive;
-        }
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     opencv2_pyrdown::opencv2_pyrdown(
             primitive_arguments_type&& operands, std::string const& name,
@@ -73,21 +58,24 @@ namespace phylanx_plugin
     {}
 
     ///////////////////////////////////////////////////////////////////////////
-    blaze::DynamicTensor<std::uint8_t> opencv2_pyrdown::calculate(std::string const& name) const
+    phylanx::execution_tree::primitive_argument_type opencv2_pyrdown::calculate(
+        primitive_arguments_type && args) const
     {
+        auto arg1 = extract_numeric_value(args[0], name_, codename_);
+        auto img = arg1.tensor();
+
         Mat cvimgin(img.rows(), img.columns(), CV_8UC3, img.data());
-        if(cvimg.data == nullptr) {
+        if(cvimgin.data == nullptr) {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
                 "opencv2_pyrup::eval",
                 generate_error_message(
-                    "image not loaded successfully: " + name));
+                    "image not accessed successfully"));
         }
 
         Mat cvimgout;
-        pyrUp(cvimgin, cvimgout, Size(cvimgin.cols/2, cvimgin.rows/2) );
+        pyrUp(cvimgin, cvimgout, cv::Size(cvimgin.cols/2, cvimgin.rows/2) );
         DynamicTensor<std::uint8_t> bimg(cvimgout.rows, cvimgout.cols, cvimgout.channels(), cvimgout.data);
-
-        return bimg;
+        return phylanx::execution_tree::primitive_argument_type{bimg};
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -95,7 +83,7 @@ namespace phylanx_plugin
     opencv2_pyrdown::eval(primitive_arguments_type const& operands,
         primitive_arguments_type const& args, eval_context ctx) const
     {
-        if (operands.size() > 1)
+        if (operands.size() != 1)
         {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
                 "opencv2_pyrdown::eval",
@@ -104,22 +92,15 @@ namespace phylanx_plugin
                     "argument"));
         }
 
-        if (operands.empty())
-        {
-            // no arguments, derive functionality from primitive name
-            return hpx::make_ready_future(primitive_argument_type{
-                calculate(detail::extract_function_name(name_))});
-        }
-
         auto this_ = this->shared_from_this();
-        return string_operand(
-                operands[0], args, name_, codename_, std::move(ctx))
-            .then(
-                [this_](hpx::future<std::string> val)
-                ->  primitive_argument_type
-                {
-                    return primitive_argument_type{
-                        this_->calculate(val.get())};
-                });
+        return hpx::dataflow(hpx::launch::sync, hpx::util::unwrapping(
+            [this_ = std::move(this_)](primitive_arguments_type && args)
+            ->  primitive_argument_type
+            {
+                return this_->calculate(std::move(args));
+            }),
+            phylanx::execution_tree::primitives::detail::map_operands(
+                operands, phylanx::execution_tree::functional::value_operand{}, args,
+                name_, codename_));
     }
 }
