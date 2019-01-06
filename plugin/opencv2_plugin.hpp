@@ -8,8 +8,7 @@
 
 // https://stackoverflow.com/questions/33602675/what-is-the-difference-between-umat-and-mat-in-opencv
 //
-#include "opencv2_imread_color.hpp"
-#include "opencv2_imread_gray.hpp"
+#include "opencv2_imread.hpp"
 #include "opencv2_pyrup.hpp"
 #include "opencv2_pyrdown.hpp"
 

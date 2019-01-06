@@ -3,8 +3,8 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if !defined(PHYLANX_OCV2_IMREAD_GRAY)
-#define PHYLANX_OCV2_IMREAD_GRAY
+#if !defined(PHYLANX_OCV2_IMREAD_COLOR)
+#define PHYLANX_OCV2_IMREAD_COLOR
 
 #include <phylanx/config.hpp>
 #include <phylanx/execution_tree/primitives/base_primitive.hpp>
@@ -21,9 +21,9 @@
 
 namespace phylanx_plugin
 {
-    class opencv2_imread_gray
+    class opencv2_imread
       : public phylanx::execution_tree::primitives::primitive_component_base
-      , public std::enable_shared_from_this<opencv2_imread_gray>
+      , public std::enable_shared_from_this<opencv2_imread>
     {
     private:
         using primitive_argument_type =
@@ -37,15 +37,15 @@ namespace phylanx_plugin
             primitive_arguments_type const& operands,
             primitive_arguments_type const& args) const;
 
-         primitive_argument_type calculate(
+        primitive_argument_type calculate(
             primitive_arguments_type && args) const;
 
     public:
         static phylanx::execution_tree::match_pattern_type const match_data;
 
-        opencv2_imread_gray() = default;
+        opencv2_imread() = default;
 
-        opencv2_imread_gray(primitive_arguments_type&& operands,
+        opencv2_imread(primitive_arguments_type&& operands,
             std::string const& name, std::string const& codename);
 
         hpx::future<primitive_argument_type> eval(
@@ -55,12 +55,12 @@ namespace phylanx_plugin
     };
 
     inline phylanx::execution_tree::primitive
-    create_opencv2_imread_gray(hpx::id_type const& locality,
+    create_opencv2_imread(hpx::id_type const& locality,
         phylanx::execution_tree::primitive_arguments_type&& operands,
         std::string const& name = "", std::string const& codename = "")
     {
         return phylanx::execution_tree::create_primitive_component(
-            locality, "opencv2_imread_gray", std::move(operands), name, codename);
+            locality, "opencv2_imread", std::move(operands), name, codename);
     }
 }
 

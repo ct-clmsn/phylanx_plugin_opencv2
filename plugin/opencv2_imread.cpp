@@ -18,7 +18,7 @@
 #include <vector>
 #include <functional>
 
-#include "opencv2_imread_gray.hpp"
+#include "opencv2_imread.hpp"
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
@@ -28,7 +28,7 @@ using namespace blaze;
 namespace phylanx_plugin
 {
     constexpr char const* const help_string = R"(
-        opencv2_imread_gray(name)
+        opencv2_imread(name)
         Args:
 
             name (string) : string to a file path
@@ -40,18 +40,18 @@ namespace phylanx_plugin
 
     ///////////////////////////////////////////////////////////////////////////
     phylanx::execution_tree::match_pattern_type const
-        opencv2_imread_gray::match_data =
+        opencv2_imread::match_data =
         {
-            hpx::util::make_tuple("opencv2_imread_gray",
-                std::vector<std::string>{"opencv2_imread_gray(_1)"},
-                &create_opencv2_imread_gray,
-                &phylanx::execution_tree::create_primitive<opencv2_imread_gray>,
+            hpx::util::make_tuple("opencv2_imread",
+                std::vector<std::string>{"opencv2_imread(_1)"},
+                &create_opencv2_imread,
+                &phylanx::execution_tree::create_primitive<opencv2_imread>,
                 help_string
             )
         };
 
     ///////////////////////////////////////////////////////////////////////////
-    opencv2_imread_gray::opencv2_imread_gray(
+    opencv2_imread::opencv2_imread(
             primitive_arguments_type&& operands, std::string const& name,
             std::string const& codename)
       : phylanx::execution_tree::primitives::primitive_component_base(
@@ -59,16 +59,17 @@ namespace phylanx_plugin
     {}
 
     ///////////////////////////////////////////////////////////////////////////
-    phylanx::execution_tree::primitive_argument_type opencv2_imread_gray::calculate(
-        phylanx::execution_tree::primitive_arguments_type && args) const
+    phylanx::execution_tree::primitive_argument_type opencv2_imread::calculate(
+        primitive_arguments_type && args) const
     {
         // extract arguments
         auto const fname = extract_string_value(args[0]);
+        auto const imread_type = extract_scalar_integer_value(args[1]);
 
-        Mat const img = imread(fname.c_str(), IMREAD_GRAYSCALE);
+        Mat const img = imread(fname.c_str(), imread_type);
         if(img.data == nullptr) {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
-                "opencv2_imread_gray::eval",
+                "opencv2_imread::eval",
                 generate_error_message(
                     "image file not loaded successfully: " + fname));
         }
@@ -79,16 +80,16 @@ namespace phylanx_plugin
 
     ///////////////////////////////////////////////////////////////////////////
     hpx::future<phylanx::execution_tree::primitive_argument_type>
-    opencv2_imread_gray::eval(primitive_arguments_type const& operands,
+    opencv2_imread::eval(primitive_arguments_type const& operands,
         primitive_arguments_type const& args, eval_context ctx) const
     {
-        if (operands.size() != 1)
+        if (operands.size() != 2)
         {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
-                "opencv2_imread_gray::eval",
+                "opencv2_imread::eval",
                 generate_error_message(
-                    "opencv2_imread_gray accepts either none or exactly one "
-                    "argument"));
+                    "opencv2_imread accepts exactly two "
+                    "arguments"));
         }
 
         auto this_ = this->shared_from_this();
