@@ -10,9 +10,9 @@
 
 PHYLANX_REGISTER_PLUGIN_MODULE();
 
-PHYLANX_REGISTER_PLUGIN_FACTORY(opencv2_imread_plugin,
+PHYLANX_REGISTER_PLUGIN_FACTORY(imread_plugin,
     phylanx_plugin::opencv2_imread::match_data);
-PHYLANX_REGISTER_PLUGIN_FACTORY(opencv2_pyrup_plugin,
+PHYLANX_REGISTER_PLUGIN_FACTORY(pyrup_plugin,
     phylanx_plugin::opencv2_pyrup::match_data);
-PHYLANX_REGISTER_PLUGIN_FACTORY(opencv2_pyrdown_plugin,
+PHYLANX_REGISTER_PLUGIN_FACTORY(pyrdown_plugin,
     phylanx_plugin::opencv2_pyrdown::match_data);
