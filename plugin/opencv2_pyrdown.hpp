@@ -60,7 +60,7 @@ namespace phylanx_plugin
         std::string const& name = "", std::string const& codename = "")
     {
         return phylanx::execution_tree::create_primitive_component(
-            locality, "opencv2_pyrdown", std::move(operands), name, codename);
+            locality, "pyrdown", std::move(operands), name, codename);
     }
 }
 

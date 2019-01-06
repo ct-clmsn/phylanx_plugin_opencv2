@@ -16,6 +16,6 @@ set(plugin_sources
     ${CMAKE_CURRENT_LIST_DIR}/opencv2_pyrdown.cpp)
 
 add_phylanx_primitive_plugin(
-    ocv2
+    opencv2
     HEADERS ${plugin_headers}
     SOURCES ${plugin_sources})

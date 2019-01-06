@@ -27,7 +27,7 @@ using namespace blaze;
 namespace phylanx_plugin
 {
     constexpr char const* const help_string = R"(
-        opencv2_pyrdown(img)
+        pyrdown(img)
         Args:
 
             img (tensor) : BlazeTensor<uint8_t> of pixel data
@@ -41,8 +41,8 @@ namespace phylanx_plugin
     phylanx::execution_tree::match_pattern_type const
         opencv2_pyrdown::match_data =
         {
-            hpx::util::make_tuple("opencv2_pyrdown",
-                std::vector<std::string>{"opencv2_pyrdown(_1)"},
+            hpx::util::make_tuple("pyrdown",
+                std::vector<std::string>{"pyrdown(_1)"},
                 &create_opencv2_pyrdown,
                 &phylanx::execution_tree::create_primitive<opencv2_pyrdown>,
                 help_string

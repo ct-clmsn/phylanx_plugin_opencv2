@@ -28,10 +28,11 @@ using namespace blaze;
 namespace phylanx_plugin
 {
     constexpr char const* const help_string = R"(
-        opencv2_imread(name)
+        cv.imread(name, image_type)
         Args:
 
             name (string) : string to a file path
+            name (int) : int cv.IMREAD_COLOR/cv.IMREAD_GRAYSCALE (optional)
 
         Returns:
 
@@ -42,8 +43,9 @@ namespace phylanx_plugin
     phylanx::execution_tree::match_pattern_type const
         opencv2_imread::match_data =
         {
-            hpx::util::make_tuple("opencv2_imread",
-                std::vector<std::string>{"opencv2_imread(_1)"},
+
+            hpx::util::make_tuple("imread",
+                std::vector<std::string>{"imread(_1)", "imread(_1, _2)"},
                 &create_opencv2_imread,
                 &phylanx::execution_tree::create_primitive<opencv2_imread>,
                 help_string
@@ -64,7 +66,7 @@ namespace phylanx_plugin
     {
         // extract arguments
         auto const fname = extract_string_value(args[0]);
-        auto const imread_type = extract_scalar_integer_value(args[1]);
+        auto const imread_type = args.size() == 1 ? IMREAD_COLOR : extract_scalar_integer_value(args[1]);
 
         Mat const img = imread(fname.c_str(), imread_type);
         if(img.data == nullptr) {
@@ -83,13 +85,33 @@ namespace phylanx_plugin
     opencv2_imread::eval(primitive_arguments_type const& operands,
         primitive_arguments_type const& args, eval_context ctx) const
     {
-        if (operands.size() != 2)
+        auto const operands_size = operands.size();
+        if (operands_size != 2 || operands_size != 1)
         {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
                 "opencv2_imread::eval",
                 generate_error_message(
                     "opencv2_imread accepts exactly two "
                     "arguments"));
+        }
+
+        bool arguments_valid = true;
+        for (std::size_t i = 0; i != operands.size(); ++i)
+        {
+            if (!valid(operands[i]))
+            {
+                arguments_valid = false;
+            }
+        }
+
+        if (!arguments_valid)
+        {
+            HPX_THROW_EXCEPTION(hpx::bad_parameter,
+                "stack_operation::eval",
+                generate_error_message(
+                    "the stack_operation primitive requires that "
+                        "the arguments given by the operands array "
+                        "are valid"));
         }
 
         auto this_ = this->shared_from_this();
