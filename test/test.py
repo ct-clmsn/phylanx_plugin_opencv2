@@ -1,26 +1,29 @@
 from phylanx import Phylanx
 from cv2 import imread, IMREAD_COLOR, IMREAD_GRAYSCALE
+from numpy import eye
 
-def imload_cv(img_path_str):
-    A = imread(img_path_str, IMREAD_COLOR)
-    B = imread(img_path_str, IMREAD_GRAYSCALE)
-    print('color')
+@Phylanx(debug=True)
+def eye_test():
+    A = eye((10,10))
     print(A)
-    print('grayscale')
-    print(B)
 
-@Phylanx
-def imload_physl(img_path_str):
-    A = imread(img_path_str, IMREAD_COLOR)
-    B = imread(img_path_str, IMREAD_GRAYSCALE)
-    print('color')
+def imload_cv(img_path_str, color):
+    A = imread(img_path_str, color)
     print(A)
-    print('grayscale')
-    print(B)
+
+@Phylanx(debug=True)
+def imload_physl(img_path_str, color):
+    A = imread(img_path_str, color)
+    print(A)
 
 if __name__ == "__main__":
+    eye_test()
+
     import sys
     fstr = sys.argv[1]
     print(fstr)
-    imload_cv(fstr)
-    imload_physl(fstr)
+
+    imload_cv(fstr, IMREAD_COLOR)
+    imload_cv(fstr, IMREAD_GRAYSCALE)
+    imload_physl(fstr, IMREAD_COLOR)
+    imload_physl(fstr, IMREAD_GRAYSCALE)
