@@ -17,8 +17,9 @@
 #include <utility>
 #include <vector>
 #include <functional>
+#include <iostream>
 
-#include "opencv2_imread.hpp"
+#include <phylanx/plugins/opencv/opencv2_imread.hpp>
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
@@ -86,7 +87,7 @@ namespace phylanx_plugin
         primitive_arguments_type const& args, eval_context ctx) const
     {
         auto const operands_size = operands.size();
-        if (operands_size != 2 || operands_size != 1)
+        if (operands_size != 2 && operands_size != 1)
         {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
                 "opencv2_imread::eval",
@@ -96,7 +97,7 @@ namespace phylanx_plugin
         }
 
         bool arguments_valid = true;
-        for (std::size_t i = 0; i != operands.size(); ++i)
+        for (std::size_t i = 0; i < operands_size; ++i)
         {
             if (!valid(operands[i]))
             {
