@@ -67,7 +67,8 @@ namespace phylanx_plugin
     {
         // extract arguments
         auto const fname = extract_string_value(args[0]);
-        auto const imread_type = args.size() == 1 ? IMREAD_COLOR : extract_scalar_integer_value(args[1]);
+        auto const imread_type = args.size() == 1 ? IMREAD_COLOR
+            : extract_scalar_integer_value(args[1]);
 
         Mat const img = imread(fname.c_str(), imread_type);
         if(img.data == nullptr) {
@@ -78,7 +79,9 @@ namespace phylanx_plugin
         }
 
         DynamicTensor<std::uint8_t> bimg(img.rows, img.cols, img.channels(), img.data);
-        return phylanx::execution_tree::primitive_argument_type{std::move(bimg)};
+        return phylanx::execution_tree::primitive_argument_type{
+            phylanx::ir::node_data<std::uint8_t>{std::move(bimg)}
+        };
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -108,22 +111,23 @@ namespace phylanx_plugin
         if (!arguments_valid)
         {
             HPX_THROW_EXCEPTION(hpx::bad_parameter,
-                "stack_operation::eval",
+                "opencv2_imread::eval",
                 generate_error_message(
-                    "the stack_operation primitive requires that "
+                    "opencv2_imread primitive requires that "
                         "the arguments given by the operands array "
                         "are valid"));
         }
 
         auto this_ = this->shared_from_this();
-        return hpx::dataflow(hpx::launch::sync, hpx::util::unwrapping(
-            [this_ = std::move(this_)](primitive_arguments_type && args)
-            ->  primitive_argument_type
+        return hpx::dataflow(hpx::launch::sync
+            , hpx::util::unwrapping(
+                [this_ = std::move(this_)](primitive_arguments_type && args)
+                    ->  primitive_argument_type
             {
                 return this_->calculate(std::move(args));
             }),
             phylanx::execution_tree::primitives::detail::map_operands(
                 operands, phylanx::execution_tree::functional::value_operand{}, args,
-                name_, codename_));
+                name_, codename_, std::move(ctx)));
     }
 }
